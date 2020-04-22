@@ -1,20 +1,19 @@
-package com.capgemini.controller;
+package com.capgemini.main;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 import com.capgemini.dto.WishListDto;
 import com.capgemini.exception.WishListException;
-import com.capgemini.service.Validator;
 import com.capgemini.service.WishListService;
 import com.capgemini.service.WishListServiceImpl;
 
 public class WishListController {
-	
-	public WishListController(){
+	public WishListController() {
 		Scanner sc = new Scanner(System.in);
 	    WishListService wlService = new WishListServiceImpl();
-		Validator v=new Validator();
+		
 		int choice = 0;
 		WishListDto wl = null;
 		List<WishListDto> list = null;
@@ -24,24 +23,23 @@ public class WishListController {
 			System.out.println("2.View Wishlist");
 			System.out.println("3.Exit");
 			System.out.println("enter your choice");
-			choice=sc.nextInt();
+			try {
+				choice = sc.nextInt();
+			} catch (InputMismatchException e) {
+				System.out.println("please enter a number nothing else");
+				sc.nextLine();
+			}
 			switch(choice)
 			{
 			case 1:
 				System.out.print("Enter Product Name : ");
-				System.out.println("\n Note: Product name should not be blank and first letter should be capital");
 			    String prod = sc.next();
 				wl = new WishListDto();
 				wl.setProductName(prod);
 				try
 				{
-					if(v.validateProductName(prod)) {
 				String pName = wlService.addProductToWishList(wl);
 				System.out.println("Product = "+pName+ " succesfully added to wishlist");
-				}
-					else {
-						System.out.println("please enter valid Product name");
-					}
 				}
 				catch(WishListException e)
 				{
@@ -62,17 +60,15 @@ public class WishListController {
 				break;
 			case 3:
 				System.out.println("Exiting WishList.........");
-				return;
+				System.exit(0);
 			default:
-				System.err.println("Incorrect choice");
-				System.err.println("enter correct choice");
+				System.err.println("Invalid input!! Please enter number between 1 to 3 only!");
 				break;
 			}
 		}
-
 	}
 	public static void main(String[] args) 
 	{
 		new WishListController();
-			}
+	}
 }
